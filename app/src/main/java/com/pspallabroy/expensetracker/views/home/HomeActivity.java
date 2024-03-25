@@ -1,5 +1,6 @@
 package com.pspallabroy.expensetracker.views.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
@@ -10,16 +11,15 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.pspallabroy.expensetracker.R;
-import com.pspallabroy.expensetracker.databinding.ActivityHomeBinding;
 import com.pspallabroy.expensetracker.views.models.MainItem;
 
 import java.util.ArrayList;
 
 public class HomeActivity extends AppCompatActivity {
-    private ActivityHomeBinding binding;
-
     ArrayList<MainItem> mainItems = new ArrayList<MainItem>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,13 +32,24 @@ public class HomeActivity extends AppCompatActivity {
             return insets;
         });
 
-        binding = ActivityHomeBinding.inflate(getLayoutInflater());
-
-        binding.mainList.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        llm.setOrientation(LinearLayoutManager.VERTICAL);
 
         mainItems.add(new MainItem(1, "Jan 24", 2500.20));
         mainItems.add(new MainItem(2, "FEB 24", 25000));
         mainItems.add(new MainItem(3, "MAR 24", 5060));
         mainItems.add(new MainItem(4, "APR 24", 2190.39));
+        MenuRowAdapter adapter = new MenuRowAdapter(this, mainItems);
+
+        RecyclerView mainList = findViewById(R.id.mainList);
+        mainList.setLayoutManager(llm);
+        mainList.setAdapter(adapter);
+
+        FloatingActionButton addBtn = findViewById(R.id.flBtnAddMainItem);
+        addBtn.setOnClickListener(v -> {
+            Intent iAddExpense = new Intent(this, AddItemActivity.class);
+            iAddExpense.putExtra("from", "HOME");
+            startActivity(iAddExpense);
+        });
     }
 }
